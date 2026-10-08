@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 export const CATEGORIES = ["Material escolar", "Oficina", "Manualidades", "Regalo"] as const;
 export type Category = (typeof CATEGORIES)[number];
-export const SUPPLIERS = [
+export const SUPPLIERS: [string, string, string] = [
   "Papelería Central S.L.",
   "Distribuciones Escolares Martínez",
   "Suministros de Oficina García",
