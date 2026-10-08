@@ -229,7 +229,7 @@ function ProductList({ products, lowCount, onMove }: {
 
 const inputCls = "mt-1 w-full rounded-xl border border-input bg-card px-4 py-3 text-base outline-none focus:ring-2 focus:ring-ring";
 
-function Field({ label, error, children }: { label: string; error?: string; children: ReactNode }) {
+function Field({ label, error, children }: { label: string; error?: string | undefined; children: ReactNode }) {
   return (
     <label className="block">
       <span className="text-sm font-semibold">{label}</span>
@@ -303,12 +303,12 @@ function MovementForm({ products, preselect, onSubmit }: {
 
 function NewProduct({ onSubmit }: { onSubmit: (p: Omit<Product, "id">) => void }) {
   const [f, setF] = useState({ name: "", category: "", stock: "", threshold: "", supplier: "" });
-  const [errs, setErrs] = useState<Record<string, string>>({});
+  const [errs, setErrs] = useState<Partial<Record<"name" | "category" | "stock" | "threshold" | "supplier", string>>>({});
   const set = (k: keyof typeof f) => (e: { target: { value: string } }) => { setF({ ...f, [k]: e.target.value }); setErrs({ ...errs, [k]: "" }); };
 
   const submit = (e: FormEvent) => {
     e.preventDefault();
-    const er: Record<string, string> = {};
+    const er: Partial<Record<"name" | "category" | "stock" | "threshold" | "supplier", string>> = {};
     const name = f.name.trim();
     if (!name) er.name = "El nombre es obligatorio";
     else if (name.length > 80) er.name = "Máximo 80 caracteres";
