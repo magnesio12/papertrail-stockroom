@@ -363,6 +363,67 @@ function NewProduct({ onSubmit }: { onSubmit: (p: Omit<Product, "id">) => void }
   );
 }
 
+// ============ Datos del negocio (de ejemplo: sustituir por los reales) ============
+const BUSINESS = {
+  description:
+    "Papelería de barrio con material escolar, artículos de oficina y manualidades. Si algo no está en el mostrador, lo pedimos al proveedor en 24-48 h.",
+  address: "Calle de los Libreros 12, bajo · 28020 Madrid",
+  phone: "910 123 456",
+  hours: [
+    ["Lunes a viernes", "9:30 – 13:30 · 17:00 – 20:30"],
+    ["Sábado", "10:00 – 14:00"],
+    ["Domingo y festivos", "Cerrado"],
+  ] as [string, string][],
+  mapsUrl: "https://maps.google.com/?q=Calle+de+los+Libreros+12+Madrid",
+  instagram: "https://instagram.com/lasuperpapeleria",
+  facebook: "https://facebook.com/lasuperpapeleria",
+  whatsapp: "https://wa.me/34600000000",
+};
+
+function BusinessInfo() {
+  return (
+    <div className="space-y-4">
+      <h2 className="text-2xl font-black">Nuestra tienda</h2>
+      <p className="text-sm text-muted-foreground">{BUSINESS.description}</p>
+
+      <div className="rounded-2xl border bg-card p-4">
+        <h3 className="font-display text-base font-bold">Dirección y contacto</h3>
+        <p className="mt-2 text-sm">{BUSINESS.address}</p>
+        <p className="text-sm">Teléfono: <a href={`tel:+34${BUSINESS.phone.replace(/\s/g, "")}`} className="font-semibold text-primary underline">{BUSINESS.phone}</a></p>
+        <a
+          href={BUSINESS.mapsUrl}
+          target="_blank"
+          rel="noreferrer"
+          className="mt-3 inline-block rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground"
+        >
+          Abrir en Google Maps ↗
+        </a>
+      </div>
+
+      <div className="rounded-2xl border bg-card p-4">
+        <h3 className="font-display text-base font-bold">Horario</h3>
+        <ul className="mt-2 space-y-1 text-sm">
+          {BUSINESS.hours.map(([days, times]) => (
+            <li key={days} className="flex justify-between gap-3">
+              <span className="text-muted-foreground">{days}</span>
+              <span className="text-right font-medium">{times}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div className="rounded-2xl border bg-card p-4">
+        <h3 className="font-display text-base font-bold">Síguenos o escríbenos</h3>
+        <div className="mt-3 grid grid-cols-3 gap-2">
+          <a href={BUSINESS.instagram} target="_blank" rel="noreferrer" className="rounded-lg border border-primary py-2 text-center text-sm font-semibold text-primary">Instagram</a>
+          <a href={BUSINESS.facebook} target="_blank" rel="noreferrer" className="rounded-lg border border-primary py-2 text-center text-sm font-semibold text-primary">Facebook</a>
+          <a href={BUSINESS.whatsapp} target="_blank" rel="noreferrer" className="rounded-lg bg-secondary py-2 text-center text-sm font-semibold text-secondary-foreground">WhatsApp</a>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function History({ movements, products }: { movements: Movement[]; products: Product[] }) {
   const name = (id: string) => products.find((p) => p.id === id)?.name ?? "Producto eliminado";
   return (
