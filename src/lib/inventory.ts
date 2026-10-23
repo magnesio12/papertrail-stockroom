@@ -54,13 +54,27 @@ const seed: [string, Category, number, number, string][] = [
   ["Agenda escolar 2026-2027", "Material escolar", 35, 15, D],
 ];
 
+// Detects whether the browser allows localStorage (it can be disabled by
+// the user or by privacy settings); used to show a warning in the UI.
+export function storageAvailable(): boolean {
+  try {
+    localStorage.setItem("__sp_test", "1");
+    localStorage.removeItem("__sp_test");
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 function load<T>(key: string, fallback: () => T): T {
   try {
     const raw = localStorage.getItem(key);
     if (raw) return JSON.parse(raw) as T;
   } catch {}
   const v = fallback();
-  localStorage.setItem(key, JSON.stringify(v));
+  try {
+    localStorage.setItem(key, JSON.stringify(v));
+  } catch {}
   return v;
 }
 
@@ -72,6 +86,7 @@ export function useInventory() {
   const [products, setProducts] = useState<Product[]>([]);
   const [movements, setMovements] = useState<Movement[]>([]);
   const [authed, setAuthed] = useState(false);
+  const [storageOk, setStorageOk] = useState(true);
 
   useEffect(() => {
     setProducts(
@@ -82,24 +97,31 @@ export function useInventory() {
       ),
     );
     setMovements(load<Movement[]>(MKEY, () => []));
-    setAuthed(sessionStorage.getItem(AKEY) === "1" || localStorage.getItem(AKEY) === "1");
+    try {
+      setAuthed(sessionStorage.getItem(AKEY) === "1" || localStorage.getItem(AKEY) === "1");
+    } catch {}
+    setStorageOk(storageAvailable());
     setReady(true);
   }, []);
 
-  const saveP = (p: Product[]) => { setProducts(p); localStorage.setItem(PKEY, JSON.stringify(p)); };
-  const saveM = (m: Movement[]) => { setMovements(m); localStorage.setItem(MKEY, JSON.stringify(m)); };
+  const saveP = (p: Product[]) => { setProducts(p); try { localStorage.setItem(PKEY, JSON.stringify(p)); } catch {} };
+  const saveM = (m: Movement[]) => { setMovements(m); try { localStorage.setItem(MKEY, JSON.stringify(m)); } catch {} };
 
   return {
-    ready, products, movements, authed,
+    ready, products, movements, authed, storageOk,
     login(key: string, remember: boolean) {
       if (key !== ACCESS_KEY) return false;
-      (remember ? localStorage : sessionStorage).setItem(AKEY, "1");
+      try {
+        (remember ? localStorage : sessionStorage).setItem(AKEY, "1");
+      } catch {}
       setAuthed(true);
       return true;
     },
     logout() {
-      localStorage.removeItem(AKEY);
-      sessionStorage.removeItem(AKEY);
+      try {
+        localStorage.removeItem(AKEY);
+        sessionStorage.removeItem(AKEY);
+      } catch {}
       setAuthed(false);
     },
     addProduct(p: Omit<Product, "id">) {
