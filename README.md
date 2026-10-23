@@ -58,12 +58,17 @@ Atajo equivalente: en la consola del navegador escribe `localStorage.clear(); lo
 
 ## Pantallas
 
-Las cuatro pestañas del pie de pantalla están conectadas y funcionando:
+Las cinco pestañas del pie de pantalla están conectadas y funcionando:
 
 - **Stock** — lista con buscador, filtro por categoría, contador de artículos por reponer (táctalo para ver solo las alertas) y botones de entrada/venta por producto.
 - **Entrada/Salida** — registra entradas de proveedor o ventas, con validación de cantidad y aviso si la venta supera el stock.
 - **Nuevo** — da de alta un producto (nombre, categoría, stock inicial, umbral y proveedor, todos validados).
 - **Historial** — lista de movimientos con fecha, nota y cantidad.
+- **Info** — datos del negocio: descripción, dirección, teléfono, horario, redes sociales y enlace a Google Maps (en `src/routes/index.tsx`, constante `BUSINESS`; los datos actuales son de ejemplo).
+
+## Almacenamiento deshabilitado
+
+Si el navegador tiene `localStorage` deshabilitado, la app muestra un aviso visible sobre el listado y no se rompe: funciona durante la sesión, pero los datos no se guardarán al cerrar la página.
 
 ## Desarrollo
 
