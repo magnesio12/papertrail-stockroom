@@ -17,7 +17,7 @@ export const Route = createFileRoute("/")({
   component: App,
 });
 
-type Tab = "lista" | "movimiento" | "alta" | "historial";
+type Tab = "lista" | "movimiento" | "alta" | "historial" | "info";
 
 function App() {
   const inv = useInventory();
@@ -49,6 +49,11 @@ function App() {
       </header>
 
       <main className="mx-auto max-w-3xl px-4 py-4">
+        {!inv.storageOk && (
+          <div className="mb-4 rounded-xl border-2 border-destructive bg-alert-bg px-4 py-3 text-sm font-medium text-destructive">
+            ⚠ Tu navegador tiene el almacenamiento local deshabilitado: los datos no se guardarán al cerrar la página.
+          </div>
+        )}
         {tab === "lista" && (
           <ProductList
             products={inv.products}
@@ -77,6 +82,7 @@ function App() {
           <NewProduct onSubmit={(p) => { inv.addProduct(p); flash(`Añadido: ${p.name}`); setTab("lista"); }} />
         )}
         {tab === "historial" && <History movements={inv.movements} products={inv.products} />}
+        {tab === "info" && <BusinessInfo />}
       </main>
 
       {toast && (
@@ -86,12 +92,13 @@ function App() {
       )}
 
       <nav className="fixed inset-x-0 bottom-0 z-10 border-t bg-card pb-[env(safe-area-inset-bottom)]">
-        <div className="mx-auto grid max-w-3xl grid-cols-4">
+        <div className="mx-auto grid max-w-3xl grid-cols-5">
           {([
             ["lista", "Stock", "▦"],
             ["movimiento", "Entrada/Salida", "⇅"],
             ["alta", "Nuevo", "+"],
             ["historial", "Historial", "↺"],
+            ["info", "Info", "ℹ"],
           ] as [Tab, string, string][]).map(([t, label, icon]) => (
             <button
               key={t}
